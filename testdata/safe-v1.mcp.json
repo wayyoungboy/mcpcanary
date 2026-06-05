@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "docs-reader": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["docs-reader.js"],
+      "description": "Read project documentation and return relevant snippets.",
+      "tools": [
+        {
+          "name": "read_docs",
+          "description": "Read documentation files and return excerpts."
+        }
+      ]
+    }
+  }
+}
