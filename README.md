@@ -1,4 +1,8 @@
+<div align="center">
+
 # MCPCanary
+
+**A local-first trust scanner for MCP configs before your AI agent connects.**
 
 ![MCPCanary hero](assets/hero.svg)
 
@@ -8,7 +12,7 @@
 [![Output: SARIF](https://img.shields.io/badge/output-SARIF-38bdf8)](docs/THREAT_MODEL.md)
 [![Local-first](https://img.shields.io/badge/privacy-local--first-34d399)](SECURITY.md)
 
-Local-first MCP trust scanner and semantic drift canary.
+</div>
 
 MCPCanary scans Model Context Protocol (MCP) server configs before your AI agent connects to them. It looks for risky tool descriptors, permission mismatches, hidden instructions, broad filesystem access, credential exposure, and semantic drift from previously approved versions.
 
@@ -19,6 +23,15 @@ mcpcanary scan ~/.cursor/mcp.json --fail-on high
 mcpcanary lock ~/.cursor/mcp.json
 mcpcanary diff ~/.cursor/mcp.json
 ```
+
+## At a Glance
+
+| Workflow | What MCPCanary does |
+|---|---|
+| **Scan before install** | Parses MCP configs without executing servers and flags risky descriptors or permissions. |
+| **Lock approved tools** | Stores local fingerprints for the tool descriptions you reviewed. |
+| **Catch semantic drift** | Detects when a known MCP server changes intent while keeping a familiar name. |
+| **Report for humans and CI** | Emits text, Markdown, JSON, and SARIF with severity gates. |
 
 ![MCPCanary workflow](assets/workflow.svg)
 
