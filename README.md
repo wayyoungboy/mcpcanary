@@ -1,5 +1,13 @@
 # MCPCanary
 
+![MCPCanary hero](assets/hero.svg)
+
+[![CI](https://github.com/wayyoungboy/mcpcanary/actions/workflows/ci.yml/badge.svg)](https://github.com/wayyoungboy/mcpcanary/actions/workflows/ci.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/wayyoungboy/mcpcanary.svg)](https://pkg.go.dev/github.com/wayyoungboy/mcpcanary)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Output: SARIF](https://img.shields.io/badge/output-SARIF-38bdf8)](docs/THREAT_MODEL.md)
+[![Local-first](https://img.shields.io/badge/privacy-local--first-34d399)](SECURITY.md)
+
 Local-first MCP trust scanner and semantic drift canary.
 
 MCPCanary scans Model Context Protocol (MCP) server configs before your AI agent connects to them. It looks for risky tool descriptors, permission mismatches, hidden instructions, broad filesystem access, credential exposure, and semantic drift from previously approved versions.
@@ -11,6 +19,8 @@ mcpcanary scan ~/.cursor/mcp.json --fail-on high
 mcpcanary lock ~/.cursor/mcp.json
 mcpcanary diff ~/.cursor/mcp.json
 ```
+
+![MCPCanary workflow](assets/workflow.svg)
 
 ## Why
 
@@ -32,6 +42,19 @@ MCPCanary focuses on three workflows:
 - Text, JSON, Markdown, and SARIF reports
 - CI-friendly `--fail-on` severity gate
 - Works offline by default; no descriptors or private tool names are uploaded
+
+## What It Catches
+
+| ID | Risk | Example signal |
+|---|---|---|
+| `MCPCANARY-001` | Model-facing override instruction | "ignore previous instructions", hidden BCC, credential export |
+| `MCPCANARY-002` | Read-only claim conflicts with capability | claims read-only but exposes send/delete/write tools |
+| `MCPCANARY-003` | Sensitive environment variable exposure | `GITHUB_TOKEN`, `API_KEY`, `PASSWORD`, credentials |
+| `MCPCANARY-004` | Broad local or network capability | `--filesystem /`, external callbacks, broad paths |
+| `MCPCANARY-005` | Hidden Unicode in descriptor | zero-width or bidirectional control characters |
+| `MCPCANARY-006` | Similarity to known MCP threat patterns | semantic match to tool poisoning or rug-pull descriptors |
+
+![MCPCanary report card](assets/report-card.svg)
 
 ## Install
 
@@ -92,6 +115,22 @@ Compare current descriptors with the lockfile and fail if a server was added, re
 mcpcanary diff path/to/mcp.json --lockfile mcpcanary.lock
 ```
 
+## Before / After
+
+Before:
+
+- `mail-helper` says "read-only"
+- the tool list includes `send_email` and delete-like behavior
+- the server receives `GITHUB_TOKEN`
+- the args include `--filesystem /`
+- the descriptor includes model-facing override language
+
+After:
+
+- `mcpcanary scan --fail-on high` blocks it in CI
+- a reviewed config is committed with `mcpcanary.lock`
+- `mcpcanary diff` fails when the descriptor semantically drifts later
+
 ## Supported Config Shape
 
 MCPCanary reads the common MCP config shape:
@@ -120,6 +159,23 @@ MCPCanary reads the common MCP config shape:
 
 Many clients do not store tool descriptors in config files because descriptors are normally returned at runtime by the MCP server. MCPCanary v0.1 stays non-executing by default, so it scans the config and any descriptor metadata already available. Runtime descriptor capture is on the roadmap and will use sandboxed execution with explicit consent.
 
+## Client Quick Starts
+
+MCPCanary reads config files; it does not execute unknown MCP servers in v0.1.
+
+| Client | Common path |
+|---|---|
+| Claude Desktop / Claude Code | `~/.claude/mcp.json` or app-specific MCP config |
+| Cursor | `~/.cursor/mcp.json` |
+| VS Code | `.vscode/mcp.json` |
+| Windsurf | user MCP config path |
+| Codex | `~/.codex/mcp.json` |
+
+```bash
+mcpcanary scan ~/.cursor/mcp.json --fail-on high
+mcpcanary lock ~/.cursor/mcp.json --lockfile mcpcanary.lock
+```
+
 ## Local Trust Memory
 
 The v0.1 trust memory uses a local JSON store plus deterministic semantic vectors. It is intentionally simple so the CLI works offline and is easy to audit.
@@ -135,6 +191,13 @@ MCPCanary is not trying to be the only MCP security scanner. Snyk Agent Scan, Ci
 - semantic drift detection
 - team-friendly trust memory
 - CLI and CI workflows that fit open-source MCP maintainers
+
+| Tool class | What it is good at | MCPCanary wedge |
+|---|---|---|
+| Dependency scanners | package CVEs, vulnerable libraries | MCP descriptor intent and config-level permissions |
+| Runtime sandboxes | containing execution | pre-connection review without executing unknown servers |
+| MCP registries | discovery and metadata | local private configs, lockfiles, team approvals |
+| Generic RAG/security scanners | broad security review | semantic descriptor drift between approved and current MCP tools |
 
 ## Development
 

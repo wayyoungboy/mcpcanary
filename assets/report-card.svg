@@ -1,0 +1,23 @@
+<svg width="1120" height="520" viewBox="0 0 1120 520" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">MCPCanary report card</title>
+  <desc id="desc">A sample MCPCanary terminal report showing high risk MCP findings.</desc>
+  <rect width="1120" height="520" rx="28" fill="#0f172a"/>
+  <rect x="52" y="48" width="1016" height="424" rx="22" fill="#020617" stroke="#334155"/>
+  <circle cx="88" cy="84" r="7" fill="#ef4444"/>
+  <circle cx="112" cy="84" r="7" fill="#facc15"/>
+  <circle cx="136" cy="84" r="7" fill="#22c55e"/>
+  <text x="72" y="138" fill="#93c5fd" font-family="SFMono-Regular, ui-monospace, Menlo, monospace" font-size="22">$ mcpcanary scan ~/.cursor/mcp.json --fail-on high</text>
+  <text x="72" y="196" fill="#f8fafc" font-family="Inter, ui-sans-serif, system-ui" font-size="30" font-weight="800">MCPCanary score: 15/100</text>
+  <g transform="translate(72 234)">
+    <rect width="976" height="54" rx="12" fill="#7f1d1d" fill-opacity="0.42"/>
+    <text x="20" y="35" fill="#fecaca" font-family="SFMono-Regular, ui-monospace, Menlo, monospace" font-size="18">[high] MCPCANARY-001 Model-facing override instruction</text>
+  </g>
+  <g transform="translate(72 304)">
+    <rect width="976" height="54" rx="12" fill="#713f12" fill-opacity="0.44"/>
+    <text x="20" y="35" fill="#fde68a" font-family="SFMono-Regular, ui-monospace, Menlo, monospace" font-size="18">[medium] MCPCANARY-003 Sensitive environment variable exposed</text>
+  </g>
+  <g transform="translate(72 374)">
+    <rect width="976" height="54" rx="12" fill="#064e3b" fill-opacity="0.5"/>
+    <text x="20" y="35" fill="#bbf7d0" font-family="SFMono-Regular, ui-monospace, Menlo, monospace" font-size="18">drifted: docs-reader (distance 0.246)</text>
+  </g>
+</svg>
