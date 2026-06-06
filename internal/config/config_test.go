@@ -79,6 +79,42 @@ func TestLoadConfigMalformedJSONIncludesPath(t *testing.T) {
 	}
 }
 
+func TestDiscoverIncludesProjectScopedClaudeAndCodexConfigs(t *testing.T) {
+	home := t.TempDir()
+	project := t.TempDir()
+	oldwd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		_ = os.Chdir(oldwd)
+	})
+	if err := os.Chdir(project); err != nil {
+		t.Fatal(err)
+	}
+
+	for _, path := range []string{
+		".mcp.json",
+		filepath.Join(".vscode", "mcp.json"),
+		filepath.Join(".codex", "mcp.json"),
+		filepath.Join(home, ".codex", "mcp.json"),
+	} {
+		if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(path, []byte(`{"mcpServers":{}}`), 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	found := config.Discover(home)
+	for _, expected := range []string{".mcp.json", filepath.Join(".vscode", "mcp.json"), filepath.Join(".codex", "mcp.json"), filepath.Join(home, ".codex", "mcp.json")} {
+		if !containsPath(found, expected) {
+			t.Fatalf("expected %q in discovered paths, got %#v", expected, found)
+		}
+	}
+}
+
 func containsAll(value string, parts []string) bool {
 	for _, part := range parts {
 		if !contains(value, part) {
@@ -91,6 +127,15 @@ func containsAll(value string, parts []string) bool {
 func contains(value, part string) bool {
 	for i := 0; i+len(part) <= len(value); i++ {
 		if value[i:i+len(part)] == part {
+			return true
+		}
+	}
+	return false
+}
+
+func containsPath(values []string, expected string) bool {
+	for _, value := range values {
+		if value == expected {
 			return true
 		}
 	}

@@ -97,6 +97,9 @@ func IsSensitiveEnvKey(key string) bool {
 
 func Discover(home string) []string {
 	candidates := []string{
+		".mcp.json",
+		filepath.Join(".vscode", "mcp.json"),
+		filepath.Join(".codex", "mcp.json"),
 		filepath.Join(home, ".cursor", "mcp.json"),
 		filepath.Join(home, ".vscode", "mcp.json"),
 		filepath.Join(home, ".claude", "mcp.json"),

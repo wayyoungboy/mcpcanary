@@ -24,6 +24,23 @@ mcpcanary lock ~/.cursor/mcp.json
 mcpcanary diff ~/.cursor/mcp.json
 ```
 
+## Claude Code and Codex
+
+Claude Code can store shared project MCP servers in a repository-level `.mcp.json`. Put MCPCanary in front of that file before the team approves a new server:
+
+```bash
+mcpcanary scan .mcp.json --fail-on high
+mcpcanary lock .mcp.json --lockfile mcpcanary.lock
+```
+
+Codex MCP launchers are commonly managed from the Codex config layer. When you keep a JSON MCP manifest beside a project or plugin, scan it the same way:
+
+```bash
+mcpcanary scan .codex/mcp.json --format markdown
+```
+
+Running `mcpcanary scan` with no path now checks common user-level locations plus project-level `.mcp.json`, `.vscode/mcp.json`, and `.codex/mcp.json`.
+
 ## At a Glance
 
 | Workflow | What MCPCanary does |
@@ -178,11 +195,11 @@ MCPCanary reads config files; it does not execute unknown MCP servers in v0.1.
 
 | Client | Common path |
 |---|---|
-| Claude Desktop / Claude Code | `~/.claude/mcp.json` or app-specific MCP config |
+| Claude Desktop / Claude Code | project `.mcp.json`, `~/.claude/mcp.json`, or app-specific MCP config |
 | Cursor | `~/.cursor/mcp.json` |
 | VS Code | `.vscode/mcp.json` |
 | Windsurf | user MCP config path |
-| Codex | `~/.codex/mcp.json` |
+| Codex | `.codex/mcp.json` for project/plugin manifests, or MCP launchers managed from Codex config |
 
 ```bash
 mcpcanary scan ~/.cursor/mcp.json --fail-on high
